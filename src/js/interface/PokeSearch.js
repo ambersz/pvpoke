@@ -12,26 +12,33 @@ $(".poke-search[context='ranking-search']").on("keyup", function(e){
 	}
 
 	var searchKeys = searchStr.split('&');
+	for (var i = 0; i< searchKeys.length; i++){
+		searchKeys[i] = searchKeys[i].split(',');
+	}
 
 	$(".rankings-container > .rank").each(function(index, value){
 
-		var show = false;
+		var show = true;
 
 		for(var i = 0; i < searchKeys.length; i++){
-			if(types.indexOf(searchKeys[i]) == -1){
-				// Name search
-				var pokeName = $(this).find(".name").html().toLowerCase();
+			var or = 0;
+			for (var j=0;j<searchKeys[i].length;j++) {
+				if(types.indexOf(searchKeys[i][j]) == -1){
+					// Name search
+					var pokeName = $(this).find(".name").html().toLowerCase();
 
-				if(pokeName.startsWith(searchKeys[i])){
-					show = true;
-				}
-			} else{
-				// Type search
+					if(pokeName.startsWith(searchKeys[i][j])){
+						or += 1;
+					}
+				} else {
+					// Type search
 
-				if(($(this).attr("type-1") == searchKeys[i]) || ($(this).attr("type-2") == searchKeys[i])){
-					show = true;
+					if(($(this).attr("type-1") == searchKeys[i][j]) || ($(this).attr("type-2") == searchKeys[i][j])){
+						or += 1;
+					}
 				}
 			}
+			show = show && or;
 		}
 
 		if(show){
